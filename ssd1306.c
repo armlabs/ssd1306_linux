@@ -291,7 +291,10 @@ uint8_t ssd1306_oled_default_config(uint8_t oled_lines, uint8_t oled_columns)
     data_buf[i++] = SSD1306_COMM_HORIZ_NORM;    //SEGREMAP  Mirror screen horizontally (A0)
     data_buf[i++] = SSD1306_COMM_SCAN_NORM;     //COMSCANDEC Rotate screen vertically (C0)
     data_buf[i++] = SSD1306_COMM_COM_PIN;       //HARDWARE PIN 
-    data_buf[i++] = 0x02;                       //normal
+    if (oled_lines == 32)
+        data_buf[i++] = 0x02;                       // for 32 lines
+    else
+        data_buf[i++] = 0x12;                       // for 64 lines or 48 lines
     data_buf[i++] = SSD1306_COMM_CONTRAST;      //SETCONTRAST
     data_buf[i++] = 0x7f;                       // default contract value
     data_buf[i++] = SSD1306_COMM_PRECHARGE;     //SETPRECHARGE
