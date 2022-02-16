@@ -56,15 +56,15 @@ $ ./ssd1306_bin -I 64x48
 ### clear display
 - clear 1st line
 ```sh
-./ssd1306_bin -c 0
+./ssd1306_bin -c0
 ```
 - clear 2nd line
 ```sh
-$ ./ssd1306_bin -c 1
+$ ./ssd1306_bin -c1
 ```
 - clear 4th line
 ```sh
-$ ./ssd1306_bin -c 3
+$ ./ssd1306_bin -c3
 ```
 - clear whole screen
 ```sh
