@@ -12,10 +12,9 @@
 #include <ssd1306.h>
 #include <font.h>
 
-const uint8_t init_oled_type_file[] = "/tmp/.ssd1306_oled_type";
+const char init_oled_type_file[] = "/tmp/.ssd1306_oled_type";
 
 static uint8_t data_buf[1024];
-static int16_t data_len = 0;
 static uint8_t max_lines = 0;
 static uint8_t max_columns = 0;
 static uint8_t global_x = 0;
@@ -309,7 +308,7 @@ uint8_t ssd1306_oled_default_config(uint8_t oled_lines, uint8_t oled_columns)
     return _i2c_write(data_buf, i);
 }
 
-uint8_t ssd1306_oled_write_line(uint8_t size, uint8_t* ptr)
+uint8_t ssd1306_oled_write_line(uint8_t size, char* ptr)
 {
     uint16_t i = 0;
     uint16_t index = 0;
@@ -357,16 +356,16 @@ uint8_t ssd1306_oled_write_line(uint8_t size, uint8_t* ptr)
     return _i2c_write(data_buf, i);
 }
 
-uint8_t ssd1306_oled_write_string(uint8_t size, uint8_t* ptr)
+uint8_t ssd1306_oled_write_string(uint8_t size, char* ptr)
 {
     uint8_t rc = 0;
     
     if (ptr == 0)
         return 1;
     
-    uint8_t* line = 0;
-    uint8_t* cr = 0;
-    uint8_t buf[20];
+    char* line = 0;
+    char* cr = 0;
+    char buf[20];
     
     line = ptr;
     do {

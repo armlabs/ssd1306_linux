@@ -30,9 +30,9 @@ int main(int argc, char **argv)
     uint8_t i2c_node_address = 0;
     int x = -1;
     int y = -1;
-    uint8_t line[25] = {0};
-    uint8_t msg[200] = {0};
-    uint8_t oled_type[10] = {0};
+    char line[25] = {0};
+    char msg[200] = {0};
+    char oled_type[10] = {0};
     int clear_line = -1;
     int clear_all = -1;
     int orientation = -1;
