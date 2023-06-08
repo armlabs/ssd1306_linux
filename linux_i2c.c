@@ -52,8 +52,7 @@ uint8_t _i2c_write(uint8_t* ptr, int16_t len)
 	if (file_i2c == 0 || ptr == 0 || len <= 0)
 		return 1;
 				
-	int32_t rc;
-	rc = write(file_i2c, ptr, len);
+	write(file_i2c, ptr, len);
 	
 	return 0;
 }
@@ -63,8 +62,7 @@ uint8_t _i2c_read(uint8_t *ptr, int16_t len)
 	if (file_i2c == 0 || ptr == 0 || len <= 0)
 		return 1;
 				
-	int32_t rc;
-	rc = read(file_i2c, ptr, len);
+	read(file_i2c, ptr, len);
 
 	return 0;
 }
