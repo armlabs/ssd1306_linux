@@ -377,7 +377,7 @@ uint8_t ssd1306_oled_write_string(uint8_t size, char* ptr)
         }
         else
         {
-            strcpy(buf, line);
+            strncpy(buf, line, 20);
         }
         
         // set cursor position
