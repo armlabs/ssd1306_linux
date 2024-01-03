@@ -8,9 +8,10 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <linux_i2c.h>
-#include <ssd1306.h>
-#include <font.h>
+
+#include "linux_i2c.h"
+#include "ssd1306.h"
+#include "font.h"
 
 const char init_oled_type_file[] = "/tmp/.ssd1306_oled_type";
 

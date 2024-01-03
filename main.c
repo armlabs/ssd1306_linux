@@ -6,7 +6,8 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <ssd1306.h>
+
+#include "ssd1306.h"
 
 void print_help()
 {
