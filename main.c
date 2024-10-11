@@ -50,7 +50,7 @@ int main(int argc, char **argv)
         /* Lets parse */
         switch (cmd_opt) {
             case 'I':
-                strncpy(oled_type, optarg, sizeof(oled_type));
+                snprintf(oled_type, sizeof (oled_type) - 1, "%s", optarg);
                 break;
             case 'c':
                 if (optarg)
