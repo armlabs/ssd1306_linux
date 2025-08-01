@@ -1,6 +1,11 @@
 #ifndef __SSD1306_H__
 #define __SSD1306_H__
 
+#include <stdbool.h>
+
+#define SSD1306_MAX_WIDTH 128
+#define SSD1306_MAX_HEIGHT 64
+
 #define SSD1306_I2C_ADDR            0x3c
 
 #define SSD1306_COMM_CONTROL_BYTE   0x00
@@ -81,5 +86,6 @@ uint8_t ssd1306_oled_clear_line(uint8_t row);
 uint8_t ssd1306_oled_clear_screen();
 uint8_t ssd1306_oled_save_resolution(uint8_t column, uint8_t row);
 uint8_t ssd1306_oled_load_resolution();
+uint8_t ssd1306_oled_draw_bitmap(bool bitmap[SSD1306_MAX_HEIGHT][SSD1306_MAX_WIDTH]);
 
 #endif

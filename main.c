@@ -1,11 +1,14 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <inttypes.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <sys/ioctl.h>
+#include <sys/stat.h>
 
 #include "ssd1306.h"
 
@@ -18,12 +21,68 @@ void print_help()
     printf("-f\t\t0/small font 5x7 1/normal font 8x8 (default normal font)\n");
     printf("-h\t\thelp message\n");
     printf("-i\t\t0/normal oled 1/invert oled\n");
+    printf("-b\t\tread and display a bmp file (128x64 or 128x32 @ 1bpp)\n");
     printf("-l\t\tput your line to display\n");
     printf("-m\t\tput your strings to oled\n");
     printf("-n\t\tI2C device node address (0,1,2..., default 0)\n");
     printf("-r\t\t0/normal 180/rotate\n");
     printf("-x\t\tx position\n");
     printf("-y\t\ty position\n");
+}
+
+// New buffer and path for bitmap file
+#define MAX_WIDTH 128
+#define MAX_HEIGHT 64
+bool bitmap[MAX_HEIGHT][MAX_WIDTH];
+char bmp_path[256] = {0};
+
+int load_bitmap_to_bool_array(const char *filepath, bool output[MAX_HEIGHT][MAX_WIDTH], int *out_width, int *out_height) {
+    FILE *fp = fopen(filepath, "rb");
+    if (!fp) {
+        perror("fopen");
+        return -1;
+    }
+
+    uint8_t header[54];
+    if (fread(header, 1, 54, fp) != 54 || header[0] != 'B' || header[1] != 'M') {
+        fclose(fp);
+        fprintf(stderr, "Invalid BMP file\n");
+        return -1;
+    }
+
+    uint32_t offset = *(uint32_t *)&header[10];
+    int width = *(int32_t *)&header[18];
+    int height = *(int32_t *)&header[22];
+    uint16_t bpp = *(uint16_t *)&header[28];
+
+    if (bpp != 1 || width > MAX_WIDTH || (height != 32 && height != 64)) {
+        fclose(fp);
+        fprintf(stderr, "Only 1bpp 128x32 or 128x64 BMPs supported.\n");
+        return -1;
+    }
+
+    fseek(fp, offset, SEEK_SET);
+    size_t row_bytes = ((width + 31) / 32) * 4;
+
+    memset(output, 0, sizeof(bool) * MAX_WIDTH * MAX_HEIGHT);
+
+    // BMP rows are bottom-up
+    for (int row = height - 1; row >= 0; row--) {
+        uint8_t row_data[row_bytes];
+        fread(row_data, 1, row_bytes, fp);
+
+        for (int col = 0; col < width; col++) {
+            int byte_index = col / 8;
+            int bit_index = 7 - (col % 8);
+            uint8_t byte = row_data[byte_index];
+            output[row][col] = (byte >> bit_index) & 0x01;
+        }
+    }
+
+    fclose(fp);
+    *out_width = width;
+    *out_height = height;
+    return 0;
 }
 
 int main(int argc, char **argv)
@@ -45,7 +104,7 @@ int main(int argc, char **argv)
     
     while(cmd_opt != -1) 
     {
-        cmd_opt = getopt(argc, argv, "I:c::d:f:hi:l:m:n:r:x:y:");
+        cmd_opt = getopt(argc, argv, "I:c::d:f:hi:l:m:n:r:x:y:b:");
 
         /* Lets parse */
         switch (cmd_opt) {
@@ -96,6 +155,9 @@ int main(int argc, char **argv)
                 break;
             case 'y':
                 y = atoi(optarg);
+                break;
+            case 'b':
+                strncpy(bmp_path, optarg, sizeof(bmp_path));
                 break;
             case -1:
                 // just ignore
@@ -193,7 +255,17 @@ int main(int argc, char **argv)
     {
         rc += ssd1306_oled_onoff(display);
     }
-    
+
+    // print bitmap image to screen
+    if (bmp_path[0]) {
+        int w = 0, h = 0;
+        if (load_bitmap_to_bool_array(bmp_path, bitmap, &w, &h) == 0) {
+            rc += ssd1306_oled_draw_bitmap(bitmap);
+        } else {
+            fprintf(stderr, "Failed to load or parse bitmap from %s\n", bmp_path);
+        }
+    }
+
     // set cursor XY
     if (x > -1 && y > -1)
     {

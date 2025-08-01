@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <inttypes.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -462,5 +463,40 @@ uint8_t ssd1306_oled_load_resolution()
     fscanf(fp, "%hhux%hhu", &max_columns, &max_lines);
     fclose(fp);
     
+    return 0;
+}
+
+uint8_t ssd1306_oled_draw_bitmap(bool bitmap[SSD1306_MAX_HEIGHT][SSD1306_MAX_WIDTH])
+{
+    if (max_lines == 0 || max_columns == 0)
+        return 1;
+
+    uint8_t pages = max_lines / 8; // 8 pixels per page
+    uint8_t col, page;
+
+    for (page = 0; page < pages; page++)
+    {
+        // Set page and column to start of the line
+        ssd1306_oled_set_XY(0, page);
+
+        // First byte is the control byte
+        data_buf[0] = SSD1306_DATA_CONTROL_BYTE;
+
+        for (col = 0; col < max_columns; col++)
+        {
+            uint8_t byte = 0;
+            for (uint8_t bit = 0; bit < 8; bit++)
+            {
+                if (bitmap[page * 8 + bit][col])
+                    byte |= (1 << bit);
+            }
+            data_buf[col + 1] = byte;
+        }
+
+        // Send the full line (control byte + display data)
+        if (_i2c_write(data_buf, max_columns + 1) != 0)
+            return 1;
+    }
+
     return 0;
 }
