@@ -36,6 +36,7 @@ Type "make clean" to clean the project.
 -m      put your strings to oled
 -n      I2C device node address (0,1,2..., default 0)
 -r      0/normal 180/rotate
+-s      0/SA0 bit is 0(I2C addr 0x3c) 1/SA0 bit is 1(I2C addr 0x3d) (default is 0)
 -x      x position
 -y      y position
 ```
@@ -115,4 +116,12 @@ $ ./ssd1306_bin -r 180
 - set XY cursor 8,1(x is column, 8 columns skipping, y is row, 2nd line)
 ```sh
 $ ./ssd1306_bin -x 8 -y 1
+```
+### use 0x3D as I2C address in OLED SSD1306
+- default I2C address calling in software is 0x3C (no -s argument needed)
+- to make sure software reaching SSD1306 with address 0x3D, use argument "-s1"
+- to really make sure software reaching SSD1306 with address 0x3C, use argument "-s0"
+- example of writing line "Hello World" to SSD1306 with addr 0x3D
+```sh
+$ ./ssd1306_bin -s1 -l "Hello World"
 ```

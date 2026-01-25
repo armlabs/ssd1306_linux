@@ -22,6 +22,7 @@ void print_help()
     printf("-m\t\tput your strings to oled\n");
     printf("-n\t\tI2C device node address (0,1,2..., default 0)\n");
     printf("-r\t\t0/normal 180/rotate\n");
+    printf("-s\t\t0/SA0 bit is 0(I2C addr 0x3c) 1/SA0 bit is 1(I2C addr 0x3d) (default is 0)\n");
     printf("-x\t\tx position\n");
     printf("-y\t\ty position\n");
 }
@@ -40,12 +41,13 @@ int main(int argc, char **argv)
     int inverted = -1;
     int display = -1;
     int font = 0;
+    int sa0 = 0;
     
     int cmd_opt = 0;
     
     while(cmd_opt != -1) 
     {
-        cmd_opt = getopt(argc, argv, "I:c::d:f:hi:l:m:n:r:x:y:");
+        cmd_opt = getopt(argc, argv, "I:c::d:f:hi:l:m:n:r:s:x:y:");
 
         /* Lets parse */
         switch (cmd_opt) {
@@ -91,6 +93,9 @@ int main(int argc, char **argv)
                     return 1;
                 }
                 break;
+            case 's':
+                sa0 = (uint8_t)atoi(optarg);
+                break;
             case 'x':
                 x = atoi(optarg);
                 break;
@@ -127,6 +132,11 @@ int main(int argc, char **argv)
                     printf("prams -%c missing 0 or 180 fields\n", optopt);
                     return 1;
                 }
+                else if (optopt == 's')
+                {
+                    printf("prams -%c missing 0,1 SA0 bit value to define using 0x3C or 0x3D I2C addr to OLED SSD1306\n", optopt);
+                    return 1;
+                }
                 else if (optopt == 'x' || optopt == 'y')
                 {
                     printf("prams -%c missing coordinate values\n", optopt);
@@ -142,7 +152,7 @@ int main(int argc, char **argv)
     uint8_t rc = 0;
     
     // open the I2C device node
-    rc = ssd1306_init(i2c_node_address);
+    rc = ssd1306_init(i2c_node_address, sa0);
     
     if (rc != 0)
     {

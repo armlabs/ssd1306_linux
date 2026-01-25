@@ -1,7 +1,7 @@
 #ifndef __SSD1306_H__
 #define __SSD1306_H__
 
-#define SSD1306_I2C_ADDR            0x3c
+#define SSD1306_I2C_ADDR(SA0)       ((SA0)==1?(0x3d):(0x3c))
 
 #define SSD1306_COMM_CONTROL_BYTE   0x00
 #define SSD1306_DATA_CONTROL_BYTE   0x40
@@ -54,7 +54,7 @@
 #define SSD1306_64_48_COLUMNS       64
 
 
-uint8_t ssd1306_init(uint8_t i2c_dev);
+uint8_t ssd1306_init(uint8_t i2c_dev, uint8_t sa0);
 uint8_t ssd1306_end();
 uint8_t ssd1306_oled_onoff(uint8_t onoff);
 uint8_t ssd1306_oled_horizontal_flip(uint8_t flip);
