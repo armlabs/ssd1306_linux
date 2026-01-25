@@ -26,18 +26,18 @@ Type "make clean" to clean the project.
 - make sure the XY cursor setting in correct location before printing text
 ### Params
 ```sh
--I		init oled (128x32 or 128x64 or 64x48)
--c		clear (line number or all)
--d		0/display off 1/display on
+-I      init oled (128x32 or 128x64 or 64x48)
+-c      clear (line number or all)
+-d      0/display off 1/display on
 -f      0/small font 5x7 1/normal font 8x8 (default small font)
--h		help message
--i		0/normal oled 1/invert oled
--l		put your line to display
--m		put your strings to oled
+-h      help message
+-i      0/normal oled 1/invert oled
+-l      put your line to display
+-m      put your strings to oled
 -n      I2C device node address (0,1,2..., default 0)
--r		0/normal 180/rotate
--x		x position
--y 		y position
+-r      0/normal 180/rotate
+-x      x position
+-y      y position
 ```
 ## Example
 ### init the OLED once
