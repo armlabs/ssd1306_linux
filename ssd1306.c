@@ -259,10 +259,10 @@ uint8_t ssd1306_oled_set_rotate(uint8_t degree)
 
 uint8_t ssd1306_oled_default_config(uint8_t oled_lines, uint8_t oled_columns)
 {
-    if (oled_lines != SSD1306_128_64_LINES && oled_lines != SSD1306_128_32_LINES && SSD1306_64_48_LINES)
+    if (oled_lines != SSD1306_128_64_LINES && oled_lines != SSD1306_128_32_LINES && oled_lines != SSD1306_64_48_LINES)
         oled_lines = SSD1306_128_64_LINES;
         
-    if (oled_columns != SSD1306_128_64_COLUMNS && oled_lines != SSD1306_128_32_COLUMNS && SSD1306_64_48_COLUMNS)
+    if (oled_columns != SSD1306_128_64_COLUMNS && oled_columns != SSD1306_128_32_COLUMNS && oled_columns != SSD1306_64_48_COLUMNS)
         oled_columns = SSD1306_128_64_COLUMNS;
         
     max_lines = oled_lines;
